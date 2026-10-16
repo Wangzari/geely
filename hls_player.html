@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>HLS 播放测试</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+  body { font-family: sans-serif; max-width: 900px; margin: 30px auto; padding: 0 16px; }
+  input { width: 100%; padding: 8px; box-sizing: border-box; }
+  video { width: 100%; margin-top: 12px; background: #000; }
+  button { padding: 8px 16px; margin-top: 8px; }
+  .tip { color: #a00; font-size: 13px; }
+</style>
+</head>
+<body>
+  <h3>HLS (m3u8) 播放测试</h3>
+  <input id="url" placeholder="粘贴 m3u8 地址" />
+  <button onclick="play()">播放</button>
+  <p class="tip">注意：自签名证书需先在浏览器单独打开一次该 https 地址、点“继续访问”接受证书，再回来播放。</p>
+  <video id="v" controls autoplay muted></video>
+<script>
+function play() {
+  const url = document.getElementById('url').value.trim();
+  const video = document.getElementById('v');
+  if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.ERROR, (e, d) => console.error('HLS error:', d));
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;   // Safari 原生支持
+  } else {
+    alert('当前浏览器不支持 HLS');
+  }
+}
+</script>
+</body>
+</html>
